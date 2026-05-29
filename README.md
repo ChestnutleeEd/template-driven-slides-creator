@@ -8,7 +8,8 @@
 2. **先用 `Presentations` 做初版**：根据模板和参考资料，先创建一版遵循模板规则、叙事结构清晰的初始成果。
 3. **再用 `html-ppt` 做最终美化**：让用户从 `html-ppt` 的 36 个 themes 里选择一个主题，把它作为“美化层”叠加到模板风格之上，用于优化节奏、动画、全屏、轮播、交互和视觉完成度。
 4. **必须通过对话确认 PPTX**：HTML 是主要输出；是否还需要 PPTX，必须问用户。
-5. **必须做布局 QA**：特别检查全屏尺寸、文字遮挡、Logo/页脚冲突、轮播控件遮挡、导出模式等问题。
+5. **必须做二轮逐页检测**：最终版生成后，agent 需要从第一页到最后一页检查排版、动画、全屏、导出和设计深化空间。
+6. **必须避免版式重复**：如果很多页都像同一个卡片网格或同一种标题+框架组合，需要继续优化，让设计更丰富、多样、有节奏。
 
 ## Skill 名称
 
@@ -51,13 +52,13 @@ Use $template-driven-slides-creator to create slides from my PPT template and re
 - 创建可编辑 PPTX 或 PPTX-aware 初稿。
 - 对 deck 做更严格的预览、渲染和 QA。
 
-本环境中引用过的 `Presentations` skill 地址是：
+`Presentations` 通常来自 Codex 的 Presentations 插件/运行时。它不是本仓库自带内容，具体安装路径会因机器、用户目录和插件版本而变化。
 
 ```text
-C:\Users\栗旭阳\.codex\plugins\cache\openai-primary-runtime\presentations\26.521.10419\skills\presentations\SKILL.md
+<CODEX_HOME>/plugins/cache/openai-primary-runtime/presentations/<version>/skills/presentations/SKILL.md
 ```
 
-在其他机器上，它通常来自 Codex 的 Presentations 插件/运行时。请在 Codex 中启用 `Presentations` 插件或确认 `$presentations:Presentations` 可用。
+请在 Codex 中启用 `Presentations` 插件或确认 `$presentations:Presentations` 可用。用户可以查看该插件自带的 `SKILL.md`，了解 artifact-tool presentation JSX、PPTX 导入、PPTX 导出、预览和 QA 等其他功能。
 
 ### 为什么必须要 `html-ppt`
 
@@ -195,48 +196,48 @@ agent 会分析：
 
 ### 5. 让用户选择 `html-ppt` 主题
 
-第二阶段开始前，agent 必须列出 36 个 `html-ppt` themes，让用户选择一个。
+第二阶段开始前，agent 必须列出 36 个 `html-ppt` themes，并提供中文翻译，让用户选择一个。
 
 完整列表：
 
-```text
-minimal-white
-editorial-serif
-soft-pastel
-sharp-mono
-arctic-cool
-sunset-warm
-catppuccin-latte
-catppuccin-mocha
-dracula
-tokyo-night
-nord
-solarized-light
-gruvbox-dark
-rose-pine
-neo-brutalism
-glassmorphism
-bauhaus
-swiss-grid
-terminal-green
-xiaohongshu-white
-rainbow-gradient
-aurora
-blueprint
-memphis-pop
-cyberpunk-neon
-y2k-chrome
-retro-tv
-japanese-minimal
-vaporwave
-midcentury
-corporate-clean
-academic-paper
-news-broadcast
-pitch-deck-vc
-magazine-bold
-engineering-whiteprint
-```
+| Theme | 中文释义 |
+| --- | --- |
+| `minimal-white` | 极简白 |
+| `editorial-serif` | 编辑部衬线 |
+| `soft-pastel` | 柔和粉彩 |
+| `sharp-mono` | 锐利等宽 |
+| `arctic-cool` | 北极冷调 |
+| `sunset-warm` | 日落暖调 |
+| `catppuccin-latte` | 拿铁浅色 |
+| `catppuccin-mocha` | 摩卡深色 |
+| `dracula` | 德古拉暗色 |
+| `tokyo-night` | 东京夜色 |
+| `nord` | 北欧冷调 |
+| `solarized-light` | 日光浅色 |
+| `gruvbox-dark` | 复古暗色 |
+| `rose-pine` | 玫瑰松木 |
+| `neo-brutalism` | 新粗野主义 |
+| `glassmorphism` | 玻璃拟态 |
+| `bauhaus` | 包豪斯 |
+| `swiss-grid` | 瑞士网格 |
+| `terminal-green` | 终端绿色 |
+| `xiaohongshu-white` | 小红书白 |
+| `rainbow-gradient` | 彩虹渐变 |
+| `aurora` | 极光 |
+| `blueprint` | 蓝图 |
+| `memphis-pop` | 孟菲斯波普 |
+| `cyberpunk-neon` | 赛博霓虹 |
+| `y2k-chrome` | 千禧铬色 |
+| `retro-tv` | 复古电视 |
+| `japanese-minimal` | 日式极简 |
+| `vaporwave` | 蒸汽波 |
+| `midcentury` | 中世纪现代 |
+| `corporate-clean` | 商务简洁 |
+| `academic-paper` | 学术论文 |
+| `news-broadcast` | 新闻播报 |
+| `pitch-deck-vc` | VC 融资路演 |
+| `magazine-bold` | 大胆杂志 |
+| `engineering-whiteprint` | 工程白图 |
 
 agent 可以根据模板和用途推荐 2-3 个主题，但最终应由用户选择。
 
@@ -267,7 +268,33 @@ agent 使用 `html-ppt` 将初版成果优化为最终 HTML slides。
 - 支持 `?slide=N`、`?full=1`、`?export=1`。
 - export 模式隐藏导航控件。
 
-### 7. 避免之前的错误
+### 7. 二轮逐页检测与设计深化
+
+最终 HTML 版生成后，agent 必须进行二轮检测，从第一页到最后一页逐页检查。这个步骤不是可选项，不能只看首页或只看 contact sheet。
+
+第一类检查是技术质量：
+
+- 排版是否对齐。
+- 文本是否重叠、裁切或被模板形状遮住。
+- Logo、页眉、页脚、页码、机密标识是否保留并对齐。
+- 全屏后是否正确适配屏幕。
+- 轮播按钮、导航点、页码是否遮挡正文。
+- 动画顺序、速度和可读性是否合理。
+- canvas FX 是否在内容后方，是否干扰文字。
+- `?export=1` 模式是否隐藏所有不该出现的控件。
+
+第二类检查是设计深化：
+
+- 是否很多页都是同一种版式。
+- 是否连续多页都是类似的卡片网格。
+- 是否每页都有明确视觉锚点。
+- 是否有页面显得太空、太平或只是把文字放进框里。
+- 是否可以加入更合适的图表、时间线、证据条、参数带、流程图、对比模块、重点 callout。
+- 是否可以通过不同的构图、信息密度、动画节奏，让整份 deck 更丰富、多样、有作者感。
+
+如果二轮检测发现问题，agent 必须继续迭代弱页，然后重新检查相关页面。不能因为“所有页面都已经生成”就直接交付。
+
+### 8. 避免之前的错误
 
 这个 skill 明确要求 agent 不能再犯这些错误：
 
@@ -283,7 +310,7 @@ agent 使用 `html-ppt` 将初版成果优化为最终 HTML slides。
 
 正确做法是使用固定 16:9 逻辑画布，例如 1280 x 720，然后整体缩放到屏幕，而不是让每个文本块单独重排。
 
-### 8. 截图 QA
+### 9. 截图 QA
 
 交付前应检查：
 
@@ -302,7 +329,7 @@ agent 使用 `html-ppt` 将初版成果优化为最终 HTML slides。
 - 控件遮挡内容。
 - 导出图里出现导航 UI。
 
-### 9. PPTX 输出
+### 10. PPTX 输出
 
 如果用户选择需要 PPTX，有两种路线：
 
@@ -342,6 +369,8 @@ agent 使用 `html-ppt` 将初版成果优化为最终 HTML slides。
 优点：可编辑。  
 缺点：和最终 HTML 可能不是像素级一致，需要额外校验。
 
+如果生成 PPTX，agent 还需要确认二轮检测中的修复在 PPTX 导出或重建后仍然保留。
+
 ## 示例 Prompt
 
 ### HTML only
@@ -359,7 +388,7 @@ Use $template-driven-slides-creator to create final HTML slides and also ask whe
 ### 中文
 
 ```text
-请使用 $template-driven-slides-creator。我的输入包括一个 PPT 模板和一份参考文档。请先检查 Presentations 和 html-ppt 是否可用，然后问我是否需要 PPTX，再用 Presentations 做初版，之后列出 html-ppt 的 36 个主题让我选择，并基于选择的主题完成最终美化。请重点检查全屏尺寸和文字遮挡问题。
+请使用 $template-driven-slides-creator。我的输入包括一个 PPT 模板和一份参考文档。请先检查 Presentations 和 html-ppt 是否可用，然后问我是否需要 PPTX，再用 Presentations 做初版，之后列出 html-ppt 的 36 个主题及中文翻译让我选择，并基于选择的主题完成最终美化。最终版生成后，请从第一页到最后一页做二轮检测，重点检查全屏尺寸、文字遮挡、动画效果和版式是否重复。
 ```
 
 ## 目录结构
@@ -414,13 +443,19 @@ npx skills add https://github.com/lewislulu/html-ppt-skill
 
 ### Presentations
 
-本环境中的 skill 路径：
+来源：
 
 ```text
-C:\Users\栗旭阳\.codex\plugins\cache\openai-primary-runtime\presentations\26.521.10419\skills\presentations\SKILL.md
+Codex Presentations plugin/runtime
 ```
 
-说明：`Presentations` 通常来自 Codex 的 Presentations 插件/运行时。请在 Codex 插件环境中启用它，并查看其 `SKILL.md` 了解 artifact-tool presentation JSX、PPTX 导入、PPTX 导出、预览和 QA 等能力。
+通用本地路径形式：
+
+```text
+<CODEX_HOME>/plugins/cache/openai-primary-runtime/presentations/<version>/skills/presentations/SKILL.md
+```
+
+说明：`Presentations` 通常来自 Codex 的 Presentations 插件/运行时。请在 Codex 插件环境中启用它，并查看该插件自带的 `SKILL.md` 了解 artifact-tool presentation JSX、PPTX 导入、PPTX 导出、预览和 QA 等能力。README 不应写入任何个人用户目录或机器专属路径。
 
 ## 限制
 

@@ -99,13 +99,19 @@ After the first-pass result exists, ask the user to choose one `html-ppt` theme.
 
 ```text
 Please choose one html-ppt theme for the final polish layer:
-minimal-white, editorial-serif, soft-pastel, sharp-mono, arctic-cool, sunset-warm,
-catppuccin-latte, catppuccin-mocha, dracula, tokyo-night, nord, solarized-light,
-gruvbox-dark, rose-pine, neo-brutalism, glassmorphism, bauhaus, swiss-grid,
-terminal-green, xiaohongshu-white, rainbow-gradient, aurora, blueprint,
-memphis-pop, cyberpunk-neon, y2k-chrome, retro-tv, japanese-minimal, vaporwave,
-midcentury, corporate-clean, academic-paper, news-broadcast, pitch-deck-vc,
-magazine-bold, engineering-whiteprint.
+minimal-white (极简白), editorial-serif (编辑部衬线), soft-pastel (柔和粉彩),
+sharp-mono (锐利等宽), arctic-cool (北极冷调), sunset-warm (日落暖调),
+catppuccin-latte (拿铁浅色), catppuccin-mocha (摩卡深色), dracula (德古拉暗色),
+tokyo-night (东京夜色), nord (北欧冷调), solarized-light (日光浅色),
+gruvbox-dark (复古暗色), rose-pine (玫瑰松木), neo-brutalism (新粗野主义),
+glassmorphism (玻璃拟态), bauhaus (包豪斯), swiss-grid (瑞士网格),
+terminal-green (终端绿色), xiaohongshu-white (小红书白), rainbow-gradient (彩虹渐变),
+aurora (极光), blueprint (蓝图), memphis-pop (孟菲斯波普),
+cyberpunk-neon (赛博霓虹), y2k-chrome (千禧铬色), retro-tv (复古电视),
+japanese-minimal (日式极简), vaporwave (蒸汽波), midcentury (中世纪现代),
+corporate-clean (商务简洁), academic-paper (学术论文), news-broadcast (新闻播报),
+pitch-deck-vc (VC 融资路演), magazine-bold (大胆杂志),
+engineering-whiteprint (工程白图).
 ```
 
 Recommend 2-3 choices based on the template and audience. Examples:
@@ -143,7 +149,34 @@ Use template-inspired layouts such as:
 - Recommendation cards.
 - Closing / decision page.
 
-## 8. Responsive Fullscreen Rules
+## 8. Mandatory Second-Pass Slide Review
+
+After the final HTML deck is generated, run a second-pass review from slide 1 to the final slide. This is required before delivery and before PPTX export when PPTX is requested.
+
+For each slide, inspect technical quality:
+
+- layout alignment and spacing
+- text overlap, clipping, or hidden overflow
+- logo, footer, header, page-number, and confidentiality-label preservation
+- animation timing, order, and readability
+- canvas FX staying behind content
+- controls and navigation not covering content
+- normal, fullscreen, and export-mode correctness
+
+For each slide, inspect design depth:
+
+- whether the page repeats the same macro-layout as nearby pages
+- whether too many slides use similar card grids or title-plus-box structures
+- whether the slide has a clear visual anchor and hierarchy
+- whether empty areas should become evidence strips, diagrams, timelines, parameter bands, callouts, comparison panels, or charts
+- whether animation can better support the reading order
+- whether the slide can become richer and more varied while preserving the template's identity
+
+If multiple pages repeat the same rhythm, redesign the weakest pages before delivery. Aim for a contact sheet that looks deliberately authored: varied page compositions, distinct proof objects, and consistent template identity.
+
+If the second-pass review finds issues or meaningful design opportunities, iterate those slides and rerun the relevant screenshots/checks. Do not deliver the deck solely because all requested pages exist.
+
+## 9. Responsive Fullscreen Rules
 
 Fullscreen correctness is mandatory.
 
@@ -160,7 +193,7 @@ Recommended model:
 
 Do not let individual text blocks, cards, or diagrams reflow independently in fullscreen. That caused previous failures such as top-heavy slides, incorrect screen fit, and broken geometry.
 
-## 9. Layout QA
+## 10. Layout QA
 
 Use screenshots before final delivery:
 
@@ -182,7 +215,7 @@ Fix these issues before delivery:
 - Export mode showing navigation UI.
 - Cropped or off-screen content.
 
-## 10. Build PPTX When Requested
+## 11. Build PPTX When Requested
 
 If the user requested PPTX, choose the route based on their answer.
 
@@ -213,7 +246,9 @@ Verify PPTX:
 - Image-based PPTX has full-bleed 16:9 slide images.
 - Editable PPTX has no obvious layout drift, text overlap, or broken template elements.
 
-## 11. Final Response
+If PPTX is generated after the second-pass HTML review, inspect the PPTX output from first slide to last slide as well. Confirm the second-pass fixes survived export/rebuild.
+
+## 12. Final Response
 
 Summarize:
 
@@ -221,4 +256,5 @@ Summarize:
 - PPTX location if requested.
 - Selected html-ppt theme.
 - Required dependency status.
+- Confirmation that second-pass slide-by-slide QA/design enrichment was completed.
 - Any known residual limitation, especially whether PPTX is image-based or editable.

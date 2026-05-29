@@ -1,6 +1,6 @@
 ---
 name: template-driven-slides-creator
-description: Create template-driven presentation decks from a user-provided PPT/PPTX template and reference materials by coordinating the required Presentations and html-ppt skills. Use when the user wants a first-pass deck derived from a template plus source/reference content, then an HTML slide experience refined with one of html-ppt's 36 themes, template-preserving visual polish, fullscreen/keyboard/carousel behavior, animation, QA screenshots, and mandatory user confirmation about whether PPTX output is needed.
+description: Create template-driven presentation decks from a user-provided PPT/PPTX template and reference materials by coordinating the required Presentations and html-ppt skills. Use when the user wants a first-pass deck derived from a template plus source/reference content, then an HTML slide experience refined with one of html-ppt's 36 themes, template-preserving visual polish, fullscreen/keyboard/carousel behavior, animation, mandatory second-pass slide-by-slide QA/design enrichment, and mandatory user confirmation about whether PPTX output is needed.
 ---
 
 # Template-Driven Slides Creator
@@ -11,7 +11,8 @@ Create a polished presentation from a user's existing PowerPoint template plus r
 
 1. Use `presentations:Presentations` to create an initial rule-following deck/story from the supplied template and reference materials.
 2. Use `html-ppt` to turn the result into a refined HTML slide experience, ask the user to choose from the 36 html-ppt themes, and apply template-preserving visual polish, animation, carousel navigation, keyboard controls, fullscreen behavior, and export readiness.
-3. Ask the user through conversation whether a PPTX file is needed. If requested, export or rebuild according to the chosen route and verify the result.
+3. Run a second-pass slide-by-slide review after the final version is generated, checking both technical quality and design richness.
+4. Ask the user through conversation whether a PPTX file is needed. If requested, export or rebuild according to the chosen route and verify the result.
 
 This is an orchestration skill. It does not bundle or copy the full contents of `html-ppt` or `presentations:Presentations`. Both skills are required dependencies.
 
@@ -35,7 +36,7 @@ Always ask these questions through conversation before building the final deck:
 
 1. Confirm both required skills are available; if not, ask whether to install the missing skill(s).
 2. Ask whether the user needs a PPTX file in addition to the HTML output.
-3. Ask the user to choose one `html-ppt` theme from this list:
+3. Ask the user to choose one `html-ppt` theme from this list. Show the Chinese translations from `references/workflow.md` or `README.md` when presenting the list to the user:
 
 `minimal-white`, `editorial-serif`, `soft-pastel`, `sharp-mono`, `arctic-cool`, `sunset-warm`, `catppuccin-latte`, `catppuccin-mocha`, `dracula`, `tokyo-night`, `nord`, `solarized-light`, `gruvbox-dark`, `rose-pine`, `neo-brutalism`, `glassmorphism`, `bauhaus`, `swiss-grid`, `terminal-green`, `xiaohongshu-white`, `rainbow-gradient`, `aurora`, `blueprint`, `memphis-pop`, `cyberpunk-neon`, `y2k-chrome`, `retro-tv`, `japanese-minimal`, `vaporwave`, `midcentury`, `corporate-clean`, `academic-paper`, `news-broadcast`, `pitch-deck-vc`, `magazine-bold`, `engineering-whiteprint`.
 
@@ -53,7 +54,8 @@ Follow the full workflow in [references/workflow.md](references/workflow.md):
 6. Use `html-ppt` to refine the final HTML deck while preserving the original template style.
 7. Implement required runtime behavior: fullscreen button, carousel/slide navigation, keyboard controls, animation, and export-friendly query modes.
 8. Verify normal, fullscreen, and export layouts with screenshots; fix text overlap, hidden content, broken scaling, footer/logo collisions, and off-screen elements.
-9. If PPTX is requested, create and verify the PPTX output.
+9. Run the mandatory second-pass slide-by-slide QA and design enrichment review from slide 1 to the final slide.
+10. If PPTX is requested, create and verify the PPTX output.
 
 ## Design Rules
 
@@ -67,6 +69,33 @@ Use [references/design-rules.md](references/design-rules.md) for the visual stan
 - Text must never overlap, hide under template shapes, collide with logos/footers, or disappear after fullscreen/export.
 - Navigation and controls must not cover slide content.
 - Animations and canvas FX must support comprehension and stay behind content.
+- The final deck must avoid repetitive page rhythm; vary macro-layouts, evidence objects, visual density, and animation pacing while preserving template coherence.
+
+## Mandatory Second-Pass Review
+
+After the final HTML deck is generated, review every slide from first to last before delivery.
+
+Check technical quality:
+
+- layout alignment
+- text overlap or clipping
+- fullscreen scaling
+- navigation/control collisions
+- animation timing and readability
+- canvas FX visibility and layering
+- export-mode cleanliness
+- logo/footer/header/page-number preservation
+
+Check design depth:
+
+- repeated layouts across adjacent pages
+- too many similar card grids
+- weak visual hierarchy
+- empty or under-designed areas
+- places where a diagram, timeline, evidence strip, chart, callout, or stronger composition would improve the slide
+- opportunities to make the deck more varied, rich, and authored without breaking the template style
+
+If the review finds issues or meaningful design opportunities, iterate the weak slides and rerun the relevant checks. Do not treat a deck as complete merely because all slides exist.
 
 ## PPTX Output
 

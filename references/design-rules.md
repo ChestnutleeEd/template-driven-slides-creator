@@ -68,6 +68,33 @@ Use these patterns when fitting source content:
 - Actions: prioritized action cards with owner, reason, and expected effect.
 - Closing: concise decision ask or next-step frame.
 
+## Layout Variety
+
+The final deck should look authored when viewed as a contact sheet. Preserve template coherence, but vary the macro-layout rhythm.
+
+Avoid:
+
+- too many consecutive slides with the same card grid
+- repeated title + subtitle + boxed panel structures
+- pages that only differ by swapped text
+- decorative elements that do not add hierarchy, evidence, or meaning
+- a final deck where all slides have the same density and composition
+
+Improve variety by using:
+
+- timelines
+- process chains
+- evidence strips
+- parameter bands
+- comparison panels
+- diagrams
+- chart-led proof slides
+- quote or decision pages
+- summary rails
+- visual callouts
+
+In the second-pass review, if several pages feel repetitive, redesign the weakest pages rather than only changing colors or animations.
+
 ## Text Handling
 
 Headlines should be specific and analytical, not generic. Replace "Technical Mechanism" body text with a claim such as "Parallel OData requests exhausted MPI buffers before the dispatcher could recover."
