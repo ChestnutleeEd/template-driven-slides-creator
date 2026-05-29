@@ -28,7 +28,7 @@
 如果你的 Codex/Agents 环境支持从 GitHub 安装 skills，可以使用：
 
 ```bash
-npx skills add https://github.com/ChestnutleeEd/pattern-based-slides-creator
+npx skills add https://github.com/ChestnutleeEd/template-driven-slides-creator
 ```
 
 如果该仓库只包含 skill 目录之外的其他内容，请将本目录复制或安装到 agents 可发现的 skills 路径中，并确保目录名保持为：
@@ -45,12 +45,46 @@ template-driven-ppt-designer/SKILL.md
 
 ## 依赖建议
 
-本 skill 可以独立提供流程约束，但推荐配合以下能力使用：
+本 skill 是一个“编排型 skill”，没有把 `html-ppt` 和 `Presentations` 的全部内容复制进来。它会告诉 Codex 在合适的时候配合使用这两个 skill，但这些能力需要在当前 Codex/Agents 环境中已经安装或启用。
 
-- `html-ppt`：用于 HTML slides 的模板、主题、布局、动画和运行时。
-- `Presentations` / PowerPoint：用于需要 PPTX 产物的场景。
+推荐配合以下能力使用：
+
+- `html-ppt`：用于 HTML slides 的模板、主题、布局、CSS 动画、canvas FX、键盘运行时、演讲者模式和 HTML 渲染约定。
+- `Presentations`：用于需要原生可编辑 PPTX、artifact-tool presentation JSX 或更复杂 PowerPoint 构建的场景。
 - Edge 或 Chrome：用于将 HTML slides 渲染为高清 PNG。
 - Microsoft PowerPoint for Windows：用于通过 COM 自动生成 PPTX。
+
+### 安装 `html-ppt`
+
+`html-ppt` 是外部 skill，需要单独安装：
+
+```bash
+npx skills add https://github.com/lewislulu/html-ppt-skill
+```
+
+安装后，Codex 在执行本 skill 时可以读取并使用 `html-ppt` 里的能力，例如：
+
+- `assets/themes/*.css` 主题。
+- `templates/single-page/*.html` 单页布局。
+- `templates/full-decks/*` 整套 deck 模板。
+- `assets/animations/animations.css` 里的 `data-anim` / CSS 动画。
+- `assets/animations/fx/*.js` 里的 `data-fx` / canvas FX。
+- `assets/runtime.js` 的键盘导航、主题切换、全屏和 presenter mode。
+
+这些内容没有被复制到本仓库中；如果没有安装 `html-ppt`，本 skill 仍可提供模板驱动流程和导出脚本，但不能保证可用 `html-ppt` 的主题、动画、FX 或模板。
+
+### 启用 `Presentations`
+
+`Presentations` 通常来自 Codex 的 Presentations 插件/运行时，不是本仓库自带文件。若你的环境支持插件，请在 Codex 中启用 `Presentations` 插件；启用后可使用类似 `$presentations:Presentations` 的 skill。
+
+`Presentations` 适合：
+
+- 构建原生可编辑 PPTX。
+- 使用 artifact-tool presentation JSX。
+- 导入/编辑已有 PPTX。
+- 做更严格的 PPTX 渲染、预览和 QA。
+
+如果 `Presentations` 不可用，本 skill 默认走 HTML 优先路线：先完成 HTML，再通过高清 PNG 生成图片型 PPTX。图片型 PPTX 视觉保真，但不可直接编辑每个文本框或形状。
 
 ## 基本用法
 
@@ -60,10 +94,22 @@ template-driven-ppt-designer/SKILL.md
 Use $template-driven-ppt-designer to create a polished HTML deck from my PPT template and source content.
 ```
 
+如果当前环境已经安装 `html-ppt`，可以明确要求同时使用：
+
+```text
+Use $template-driven-ppt-designer with $html-ppt to create a polished animated HTML deck from my PPT template and source content.
+```
+
 如果还需要 PPTX：
 
 ```text
 Use $template-driven-ppt-designer to create an HTML deck and a high-resolution PPTX export from my PPT template and source content.
+```
+
+如果当前环境已经启用 `Presentations`，并且你需要可编辑 PPTX，可以明确要求：
+
+```text
+Use $template-driven-ppt-designer with $presentations:Presentations to create an editable PPTX that follows my template.
 ```
 
 中文示例：

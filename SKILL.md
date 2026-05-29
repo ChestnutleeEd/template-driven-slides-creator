@@ -9,6 +9,12 @@ description: Create polished business presentations from a user-provided PPT/PPT
 
 Create a presentation from a user's existing PowerPoint template plus source content, preserving the template style while improving structure, layout, animation, and visual polish. The required primary deliverable is an interactive HTML deck; PPTX is optional and should default to a high-resolution image-based export from the final HTML.
 
+This skill is an orchestration skill. It does not bundle the full contents of `html-ppt` or `presentations:Presentations`. Use those skills when they are installed and available:
+
+- Use `html-ppt` for HTML deck templates, themes, slide layouts, CSS animations, canvas FX, keyboard runtime, presenter mode, and PNG-oriented HTML rendering patterns.
+- Use `presentations:Presentations` for native editable PPTX workflows based on artifact-tool presentation JSX.
+- If either skill is unavailable, continue with this skill's workflow and scripts, but do not claim that unavailable templates, animations, canvas FX, or native editable PPTX helpers are present.
+
 ## Start Here
 
 First ask or confirm the output choice:
@@ -58,8 +64,9 @@ Use `scripts/render-html-slides.ps1` and `scripts/build-picture-pptx.ps1` as sta
 
 ## Tool Coordination
 
-- Use `html-ppt` for HTML layout systems, corporate-clean style, template-inspired slide patterns, carousel behavior, and canvas FX.
-- Use `presentations:Presentations` when a native PPTX or PowerPoint artifact workflow is needed.
+- Use `html-ppt` for HTML layout systems, corporate-clean style, template-inspired slide patterns, carousel behavior, CSS slide animations, canvas FX, presenter mode, and HTML-to-PNG export conventions. Read the installed `html-ppt` skill before relying on its available themes, animations, or templates.
+- Use `presentations:Presentations` when a native editable PPTX or PowerPoint artifact workflow is needed. Read the installed Presentations skill before using artifact-tool presentation JSX.
+- Do not copy or recreate the full `html-ppt` or `Presentations` instructions inside this skill. Treat them as external dependencies so their upstream behavior can stay current.
 - Use browser or Playwright-style screenshots to verify layout, especially fullscreen behavior.
 - Use PowerPoint COM on Windows when creating or checking the image-based PPTX locally.
 

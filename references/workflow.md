@@ -9,6 +9,19 @@ HTML is mandatory. PPTX is optional. At the start, ask the user whether they wan
 
 If the user already answered, continue. If they ask for PPTX, use the image-based export route unless they explicitly require editable PowerPoint objects.
 
+## 1.5. Check Optional Skill Dependencies
+
+This skill orchestrates other presentation skills but does not bundle their full contents.
+
+Before relying on external capabilities, check whether they are installed and available:
+
+- `html-ppt`: use for HTML deck templates, themes, reusable layouts, CSS animations, canvas FX, keyboard runtime, presenter mode, and HTML rendering conventions. If it is available, read its `SKILL.md` and relevant references such as themes, layouts, animations, or full-deck templates before authoring.
+- `presentations:Presentations`: use for native editable PPTX workflows based on artifact-tool presentation JSX. If it is available and the user needs editable PPTX, read its `SKILL.md` and follow its operating contract.
+
+If `html-ppt` is unavailable, continue with a custom static HTML deck and this skill's design rules, but do not claim access to `html-ppt` themes, templates, animations, presenter mode, or canvas FX.
+
+If `presentations:Presentations` is unavailable, use this skill's default route: final HTML first, then optional high-resolution image-based PPTX via PNG frames and PowerPoint COM.
+
 ## 2. Gather Inputs
 
 Collect or infer:
