@@ -13,6 +13,31 @@ The supplied template is the design authority. Preserve:
 
 Do not remove SAP or other template-specific elements unless the user explicitly asks. Do not replace the template with a generic theme.
 
+## Theme Layering
+
+The user-selected `html-ppt` theme is a polish layer, not the design authority.
+
+Use the selected theme for:
+
+- typography rhythm
+- layout pacing
+- animation vocabulary
+- accent treatment
+- background texture or canvas FX when appropriate
+- interaction and runtime conventions
+
+Do not let the selected theme override:
+
+- the supplied template's logo placement
+- core brand colors
+- header/footer structure
+- confidentiality labels
+- page numbers
+- signature geometry
+- icon style that clearly belongs to the template
+
+If the theme conflicts with the template, preserve the template and adapt the theme.
+
 ## Business-Clean Look
 
 Aim for a restrained executive report:
@@ -72,6 +97,14 @@ Recommended values:
 - Presentation ratio: 16:9 wide.
 
 Normal mode can show a centered slide with surrounding page background. Fullscreen mode should fill the viewport while preserving the complete slide composition.
+
+Hard failures:
+
+- fullscreen leaves the slide stuck at the top with a large empty lower area
+- text or diagrams reflow independently and break the template geometry
+- controls, page dots, or buttons cover slide content
+- any slide content is cropped outside the viewport
+- a slide looks correct at 1280 x 720 but overlaps or clips at 1920 x 1080 fullscreen
 
 ## Animation
 

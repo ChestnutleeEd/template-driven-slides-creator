@@ -1,29 +1,93 @@
-# Template-Driven PPT Designer
+# Template-Driven Slides Creator
 
-`template-driven-ppt-designer` 是一个面向 Codex/Agents 的演示文稿制作 skill。它把用户提供的 PowerPoint 模板和源材料转换成高质量的 HTML 演示文稿，并可选导出为高清图片型 PPTX。
+`template-driven-slides-creator` 是一个面向 Codex/Agents 的模板驱动型 slides 创作 skill。它适合这样的任务：用户提供一个 PPT/PPTX 模板，再提供参考文档、资料、旧 deck、Word、PDF、Markdown、截图或笔记，agent 需要基于模板风格生成一份完整、漂亮、可演示的 slides 成果。
 
-这个 skill 的重点不是“重新发明一套样式”，而是保留原始模板的视觉语言：Logo、颜色、页眉页脚、几何元素、机密标识、图标风格和版式节奏都会作为设计约束继续沿用。
+这个 skill 的核心思想是：
 
-## 适合场景
+1. **先尊重模板**：用户给的 PPT 模板是视觉基础，Logo、颜色、页眉页脚、几何元素、机密标识、图标风格、页码和版式节奏都必须保留。
+2. **先用 `Presentations` 做初版**：根据模板和参考资料，先创建一版遵循模板规则、叙事结构清晰的初始成果。
+3. **再用 `html-ppt` 做最终美化**：让用户从 `html-ppt` 的 36 个 themes 里选择一个主题，把它作为“美化层”叠加到模板风格之上，用于优化节奏、动画、全屏、轮播、交互和视觉完成度。
+4. **必须通过对话确认 PPTX**：HTML 是主要输出；是否还需要 PPTX，必须问用户。
+5. **必须做布局 QA**：特别检查全屏尺寸、文字遮挡、Logo/页脚冲突、轮播控件遮挡、导出模式等问题。
 
-- 用公司 PPT/PPTX 模板生成一份新的汇报 deck。
-- 将 Word、PDF、Markdown、旧 PPT、截图、日志或零散笔记整理成商务演示。
-- 制作保留品牌风格的 HTML slides。
-- 在 HTML 完稿后导出清晰的 16:9 PPTX。
-- 为事故复盘、根因分析、项目汇报、方案评审、技术分享等材料建立结构化叙事。
+## Skill 名称
 
-## 能力概览
+```text
+template-driven-slides-creator
+```
 
-- 必选输出：交互式 HTML deck。
-- 可选输出：基于 3840 x 2160 PNG 的高清图片型 PPTX。
-- 支持模板视觉继承：颜色、Logo、页眉页脚、标签、几何形状、图标语言。
-- 支持商务汇报常见页面：封面、执行摘要、时间线、机制链路、证据网格、风险影响、行动建议、结束页。
-- 支持交互控制：上一页/下一页、键盘导航、页码、圆点导航、全屏模式。
-- 支持 QA/export 查询参数：`?slide=N`、`?full=1`、`?export=1`。
-- 支持通过 `html-ppt` 作为 HTML deck 设计引擎。
-- 支持通过 PowerPoint COM 在 Windows 本地构建图片型 PPTX。
+推荐调用方式：
 
-## 安装
+```text
+Use $template-driven-slides-creator to create slides from my PPT template and reference documents.
+```
+
+中文示例：
+
+```text
+请使用 $template-driven-slides-creator，基于我提供的 PPT 模板和参考文档，先生成符合模板风格的初版，再让我选择 html-ppt 主题进行最终优化。请先问我是否需要 PPTX。
+```
+
+## 必要依赖
+
+本 skill 是一个“编排型 skill”，不会把 `html-ppt` 和 `Presentations` 的全部内容复制到本仓库中。它会要求 agent 在工作时调用这两个 skill。
+
+这两个 skill 是必要依赖，不是可选项：
+
+- `presentations:Presentations`
+- `html-ppt`
+
+如果其中任何一个不存在，agent 必须在一开始停止并通过对话询问用户是否安装或启用缺失的 skill，同时解释它们为什么必要。
+
+### 为什么必须要 `Presentations`
+
+`Presentations` 负责第一阶段：根据用户提供的 PPT/PPTX 模板和参考资料创建初版成果。
+
+它适合：
+
+- 原生 PPTX / PowerPoint 相关工作流。
+- 使用 artifact-tool presentation JSX。
+- 分析和继承模板结构。
+- 创建可编辑 PPTX 或 PPTX-aware 初稿。
+- 对 deck 做更严格的预览、渲染和 QA。
+
+本环境中引用过的 `Presentations` skill 地址是：
+
+```text
+C:\Users\栗旭阳\.codex\plugins\cache\openai-primary-runtime\presentations\26.521.10419\skills\presentations\SKILL.md
+```
+
+在其他机器上，它通常来自 Codex 的 Presentations 插件/运行时。请在 Codex 中启用 `Presentations` 插件或确认 `$presentations:Presentations` 可用。
+
+### 为什么必须要 `html-ppt`
+
+`html-ppt` 负责第二阶段：将初版成果优化成最终 HTML slide experience。
+
+它提供：
+
+- 36 个 themes。
+- 单页布局和整套 deck 模板。
+- CSS 动画。
+- canvas FX。
+- 键盘导航。
+- 主题切换。
+- 全屏能力。
+- presenter mode。
+- HTML-to-PNG 渲染约定。
+
+`html-ppt` 原地址：
+
+[https://github.com/lewislulu/html-ppt-skill](https://github.com/lewislulu/html-ppt-skill)
+
+安装方式：
+
+```bash
+npx skills add https://github.com/lewislulu/html-ppt-skill
+```
+
+`html-ppt` 还有很多额外能力，例如 full-deck templates、presenter mode、animations showcase、themes showcase、single-page layouts 等。用户可以前往它的源仓库查看完整功能。
+
+## 安装本 Skill
 
 如果你的 Codex/Agents 环境支持从 GitHub 安装 skills，可以使用：
 
@@ -31,188 +95,277 @@
 npx skills add https://github.com/ChestnutleeEd/template-driven-slides-creator
 ```
 
-如果该仓库只包含 skill 目录之外的其他内容，请将本目录复制或安装到 agents 可发现的 skills 路径中，并确保目录名保持为：
+安装后，skill 目录名应为：
 
 ```text
-template-driven-ppt-designer
+template-driven-slides-creator
 ```
 
-安装后，skill 的入口文件应位于：
+入口文件应为：
 
 ```text
-template-driven-ppt-designer/SKILL.md
+template-driven-slides-creator/SKILL.md
 ```
 
-## 依赖建议
+## 推荐安装顺序
 
-本 skill 是一个“编排型 skill”，没有把 `html-ppt` 和 `Presentations` 的全部内容复制进来。它会告诉 Codex 在合适的时候配合使用这两个 skill，但这些能力需要在当前 Codex/Agents 环境中已经安装或启用。
-
-推荐配合以下能力使用：
-
-- `html-ppt`：用于 HTML slides 的模板、主题、布局、CSS 动画、canvas FX、键盘运行时、演讲者模式和 HTML 渲染约定。
-- `Presentations`：用于需要原生可编辑 PPTX、artifact-tool presentation JSX 或更复杂 PowerPoint 构建的场景。
-- Edge 或 Chrome：用于将 HTML slides 渲染为高清 PNG。
-- Microsoft PowerPoint for Windows：用于通过 COM 自动生成 PPTX。
-
-### 安装 `html-ppt`
-
-`html-ppt` 是外部 skill，需要单独安装：
+1. 启用或确认 `Presentations` 插件可用。
+2. 安装 `html-ppt`：
 
 ```bash
 npx skills add https://github.com/lewislulu/html-ppt-skill
 ```
 
-安装后，Codex 在执行本 skill 时可以读取并使用 `html-ppt` 里的能力，例如：
+3. 安装本 skill：
 
-- `assets/themes/*.css` 主题。
-- `templates/single-page/*.html` 单页布局。
-- `templates/full-decks/*` 整套 deck 模板。
-- `assets/animations/animations.css` 里的 `data-anim` / CSS 动画。
-- `assets/animations/fx/*.js` 里的 `data-fx` / canvas FX。
-- `assets/runtime.js` 的键盘导航、主题切换、全屏和 presenter mode。
-
-这些内容没有被复制到本仓库中；如果没有安装 `html-ppt`，本 skill 仍可提供模板驱动流程和导出脚本，但不能保证可用 `html-ppt` 的主题、动画、FX 或模板。
-
-### 启用 `Presentations`
-
-`Presentations` 通常来自 Codex 的 Presentations 插件/运行时，不是本仓库自带文件。若你的环境支持插件，请在 Codex 中启用 `Presentations` 插件；启用后可使用类似 `$presentations:Presentations` 的 skill。
-
-`Presentations` 适合：
-
-- 构建原生可编辑 PPTX。
-- 使用 artifact-tool presentation JSX。
-- 导入/编辑已有 PPTX。
-- 做更严格的 PPTX 渲染、预览和 QA。
-
-如果 `Presentations` 不可用，本 skill 默认走 HTML 优先路线：先完成 HTML，再通过高清 PNG 生成图片型 PPTX。图片型 PPTX 视觉保真，但不可直接编辑每个文本框或形状。
-
-## 基本用法
-
-在 Codex/Agents 中可以这样描述任务：
-
-```text
-Use $template-driven-ppt-designer to create a polished HTML deck from my PPT template and source content.
+```bash
+npx skills add https://github.com/ChestnutleeEd/template-driven-slides-creator
 ```
 
-如果当前环境已经安装 `html-ppt`，可以明确要求同时使用：
+4. 在 Codex 中确认可以触发：
 
 ```text
-Use $template-driven-ppt-designer with $html-ppt to create a polished animated HTML deck from my PPT template and source content.
+$presentations:Presentations
+$html-ppt
+$template-driven-slides-creator
 ```
 
-如果还需要 PPTX：
+## 整体工作流程
+
+### 1. 检查必要依赖
+
+agent 必须先检查：
+
+- `Presentations` 是否存在。
+- `html-ppt` 是否存在。
+
+如果缺失，必须询问是否安装或启用，并说明：
+
+- 没有 `Presentations`，无法完成“基于模板和参考资料创建初版”的阶段。
+- 没有 `html-ppt`，无法完成“36 themes 选择、动画、canvas FX、轮播、全屏、HTML runtime”的最终优化阶段。
+
+### 2. 询问是否需要 PPTX
+
+agent 必须通过对话询问：
 
 ```text
-Use $template-driven-ppt-designer to create an HTML deck and a high-resolution PPTX export from my PPT template and source content.
+是否还需要 PPTX 文件？
+- 只需要 HTML
+- HTML + PPTX
+- HTML + 可编辑 PPTX
 ```
 
-如果当前环境已经启用 `Presentations`，并且你需要可编辑 PPTX，可以明确要求：
+默认不能替用户假设一定要或一定不要 PPTX。
+
+### 3. 读取模板和参考资料
+
+agent 会分析：
+
+- PPT/PPTX 模板。
+- 参考文档。
+- 目标受众。
+- 语言和语气。
+- 页数或演示时长。
+- 必须保留的模板元素。
+
+模板分析重点：
+
+- Logo。
+- 主色和辅助色。
+- 页眉、页脚、页码。
+- 机密标识。
+- 几何图形和装饰语言。
+- 图标风格。
+- 字体感觉。
+- 版式节奏。
+
+### 4. 使用 `Presentations` 创建初版
+
+第一阶段使用 `Presentations`，根据模板和参考资料创建初版成果。
+
+初版目标：
+
+- 遵循模板视觉规则。
+- 提炼参考资料中的叙事主线。
+- 形成页面结构。
+- 明确每页的结论、证据和视觉对象。
+- 保留模板里的关键品牌元素。
+
+这一步可以产出初版 PPTX、结构化 deck plan、页面草案或可继续优化的中间成果，具体取决于用户材料和环境能力。
+
+### 5. 让用户选择 `html-ppt` 主题
+
+第二阶段开始前，agent 必须列出 36 个 `html-ppt` themes，让用户选择一个。
+
+完整列表：
 
 ```text
-Use $template-driven-ppt-designer with $presentations:Presentations to create an editable PPTX that follows my template.
+minimal-white
+editorial-serif
+soft-pastel
+sharp-mono
+arctic-cool
+sunset-warm
+catppuccin-latte
+catppuccin-mocha
+dracula
+tokyo-night
+nord
+solarized-light
+gruvbox-dark
+rose-pine
+neo-brutalism
+glassmorphism
+bauhaus
+swiss-grid
+terminal-green
+xiaohongshu-white
+rainbow-gradient
+aurora
+blueprint
+memphis-pop
+cyberpunk-neon
+y2k-chrome
+retro-tv
+japanese-minimal
+vaporwave
+midcentury
+corporate-clean
+academic-paper
+news-broadcast
+pitch-deck-vc
+magazine-bold
+engineering-whiteprint
 ```
 
-中文示例：
+agent 可以根据模板和用途推荐 2-3 个主题，但最终应由用户选择。
 
-```text
-请使用 $template-driven-ppt-designer，基于我提供的公司 PPT 模板和 Word 材料，制作一份英文根因分析汇报。HTML 必须有，另外请导出一份高清 PPTX。
-```
+推荐参考：
 
-## 输入材料
+- 正式商务汇报：`corporate-clean`、`swiss-grid`、`minimal-white`、`pitch-deck-vc`
+- 技术分享 / 工程报告：`blueprint`、`engineering-whiteprint`、`tokyo-night`、`sharp-mono`
+- 学术 / 报告：`academic-paper`、`editorial-serif`、`solarized-light`
+- 更有表达感的内部分享：`aurora`、`bauhaus`、`magazine-bold`、`soft-pastel`
 
-推荐提供：
+注意：选择的 theme 是美化层，不是替换模板。模板风格永远优先。
 
-- 一个 PPT/PPTX 模板文件。
-- 一份或多份源材料，例如 DOCX、PPTX、PDF、Markdown、截图、日志、表格或文字说明。
-- 目标受众，例如管理层、客户、工程团队、销售团队。
-- 目标语言，例如 English、中文、双语。
-- 期望页数或汇报时长。
-- 是否需要 PPTX。
-- 是否需要保留机密标识、页脚、客户名称、版本信息等模板元素。
+### 6. 使用 `html-ppt` 优化最终版
 
-当信息缺失时，skill 默认采用：
+agent 使用 `html-ppt` 将初版成果优化为最终 HTML slides。
 
-- 语言：English。
-- 比例：16:9。
-- HTML 逻辑画布：1280 x 720。
-- PPTX 图片导出：3840 x 2160。
-- 风格：business-clean / corporate executive report。
+必须实现或检查：
 
-## 工作流
+- 保留模板风格。
+- 应用用户选择的 theme。
+- 全屏按钮。
+- 轮播或 carousel 导航。
+- 上一页 / 下一页控制。
+- 页码或 slide counter。
+- 键盘导航。
+- 适度 CSS 动画。
+- 必要时使用 canvas FX。
+- 支持 `?slide=N`、`?full=1`、`?export=1`。
+- export 模式隐藏导航控件。
 
-1. 确认交付物：HTML 必选，PPTX 可选。
-2. 收集模板和源材料。
-3. 视觉检查模板，识别必须保留的品牌元素。
-4. 将源材料整理为演示叙事。
-5. 使用 HTML deck 作为主产物进行设计。
-6. 保持 16:9 固定画布，并整体缩放实现全屏适配。
-7. 添加适度动画和背景 FX。
-8. 截图检查普通视图、全屏视图和导出视图。
-9. 如用户要求 PPTX，则从最终 HTML 渲染高清 PNG 并生成 PPTX。
-10. 验证 PPTX 清晰度、比例和页内铺满情况。
+### 7. 避免之前的错误
 
-详细流程见 [references/workflow.md](references/workflow.md)。
+这个 skill 明确要求 agent 不能再犯这些错误：
 
-## 设计原则
+- 全屏后不符合屏幕尺寸。
+- slide 只贴在屏幕上方，下面大面积空白。
+- 文字和文字互相遮挡。
+- 文字被模板形状盖住。
+- 文字和 Logo、页脚、页码、机密标识冲突。
+- 轮播按钮或导航点遮挡正文。
+- canvas FX 覆盖正文。
+- export 模式仍然显示控制按钮。
+- 1280 x 720 看起来正常，但 1920 x 1080 全屏时布局坏掉。
 
-- 模板是设计权威，不随意替换成通用主题。
-- 保留 Logo、主色、页眉页脚、标签、几何 motif 和图标风格。
-- 使用克制、清晰、可信的商务汇报视觉。
-- 标题要表达判断或结论，而不是只写泛泛的页面类型。
-- 文本尽量拆成卡片、证据条、参数条或流程节点。
-- 全屏时缩放整个 16:9 slide canvas，而不是让每个文本块单独重排。
-- 动画服务理解，不抢夺正文注意力。
-- PPTX 导出优先走高清图片路线，以换取视觉一致性和清晰度。
+正确做法是使用固定 16:9 逻辑画布，例如 1280 x 720，然后整体缩放到屏幕，而不是让每个文本块单独重排。
 
-详细设计规则见 [references/design-rules.md](references/design-rules.md)。
+### 8. 截图 QA
 
-## PPTX 导出
+交付前应检查：
 
-PPTX 导出采用“HTML 作为唯一视觉来源”的图片型路线：
+- 1280 x 720 基准视图。
+- 普通浏览器预览。
+- 1920 x 1080 或类似尺寸的全屏视图。
+- `?full=1&export=1&slide=N` 导出视图。
+- 所有复杂页面，例如流程图、时间线、证据网格、长文本、图表、卡片页。
 
-1. 先完成并验证 HTML。
-2. 将每页 HTML 渲染为 3840 x 2160 PNG。
-3. 在空白 16:9 PowerPoint 中把每张 PNG 铺满一页。
+必须修复：
+
+- 文本遮挡。
+- 内容裁切。
+- Logo 或页脚错位。
+- 全屏比例错误。
+- 控件遮挡内容。
+- 导出图里出现导航 UI。
+
+### 9. PPTX 输出
+
+如果用户选择需要 PPTX，有两种路线：
+
+#### HTML + PPTX
+
+适合追求视觉保真的场景。
+
+流程：
+
+1. 先完成最终 HTML。
+2. 将每页渲染为 3840 x 2160 PNG。
+3. 把 PNG 全屏铺到 16:9 PowerPoint 中。
 4. 添加简单原生转场。
-5. 检查图片尺寸和最终清晰度。
+5. 检查清晰度和页数。
 
-示例命令：
+示例：
 
 ```powershell
 .\scripts\render-html-slides.ps1 -HtmlPath "path\deck.html" -OutDir "path\frames" -SlideCount 9
 .\scripts\build-picture-pptx.ps1 -ImageDir "path\frames" -OutPptx "path\deck.pptx" -SlideCount 9
 ```
 
-### `render-html-slides.ps1`
+优点：视觉还原度高，清晰。  
+缺点：PPTX 中的文字和形状不可逐个编辑。
 
-将 HTML deck 截图为逐页 PNG。
+#### HTML + 可编辑 PPTX
 
-常用参数：
+适合用户明确要求可编辑文本框、图形、表格或图表的场景。
 
-- `-HtmlPath`：HTML deck 路径。
-- `-OutDir`：PNG 输出目录。
-- `-SlideCount`：总页数。
-- `-Width`：截图宽度，默认 `3840`。
-- `-Height`：截图高度，默认 `2160`。
-- `-BrowserPath`：Edge/Chrome 路径，通常可自动发现。
+流程：
 
-### `build-picture-pptx.ps1`
+1. 使用 `Presentations` / artifact-tool presentation JSX。
+2. 继承模板视觉系统。
+3. 原生构建或编辑 PPTX。
+4. 做额外 QA。
 
-将逐页 PNG 组装为 PPTX。
+优点：可编辑。  
+缺点：和最终 HTML 可能不是像素级一致，需要额外校验。
 
-常用参数：
+## 示例 Prompt
 
-- `-ImageDir`：包含 `slide-01.png`、`slide-02.png` 等图片的目录。
-- `-OutPptx`：输出 PPTX 路径。
-- `-SlideCount`：总页数。
-- `-SlideWidth`：PPT 宽度，默认 `13.333333` 英寸。
-- `-SlideHeight`：PPT 高度，默认 `7.5` 英寸。
-- `-NoTransitions`：不添加转场。
+### HTML only
+
+```text
+Use $template-driven-slides-creator to create an HTML slide deck from my PPT template and reference document. Ask me to choose one html-ppt theme before final polish.
+```
+
+### HTML + PPTX
+
+```text
+Use $template-driven-slides-creator to create final HTML slides and also ask whether I need a high-fidelity PPTX export.
+```
+
+### 中文
+
+```text
+请使用 $template-driven-slides-creator。我的输入包括一个 PPT 模板和一份参考文档。请先检查 Presentations 和 html-ppt 是否可用，然后问我是否需要 PPTX，再用 Presentations 做初版，之后列出 html-ppt 的 36 个主题让我选择，并基于选择的主题完成最终美化。请重点检查全屏尺寸和文字遮挡问题。
+```
 
 ## 目录结构
 
 ```text
-template-driven-ppt-designer/
+template-driven-slides-creator/
 ├─ SKILL.md
 ├─ agents/
 │  └─ openai.yaml
@@ -231,24 +384,52 @@ template-driven-ppt-designer/
 可以使用 Codex 官方 skill 校验脚本检查基础结构：
 
 ```bash
-python path/to/skill-creator/scripts/quick_validate.py path/to/template-driven-ppt-designer
+python path/to/skill-creator/scripts/quick_validate.py path/to/template-driven-slides-creator
 ```
 
-当前结构应满足：
+校验重点：
 
 - `SKILL.md` 存在。
 - frontmatter 中包含 `name` 和 `description`。
-- skill 名称与目录名一致。
-- `agents/openai.yaml` 提供 UI 展示信息。
+- `name` 为 `template-driven-slides-creator`。
+- skill 目录名与 skill 名称一致。
+- `agents/openai.yaml` 展示信息匹配新名称。
 - 引用文件和脚本路径存在。
+
+## 外部 Skill 源地址
+
+### html-ppt
+
+源地址：
+
+[https://github.com/lewislulu/html-ppt-skill](https://github.com/lewislulu/html-ppt-skill)
+
+安装：
+
+```bash
+npx skills add https://github.com/lewislulu/html-ppt-skill
+```
+
+说明：请前往该仓库查看完整主题、模板、动画、canvas FX、presenter mode 和 runtime 功能。
+
+### Presentations
+
+本环境中的 skill 路径：
+
+```text
+C:\Users\栗旭阳\.codex\plugins\cache\openai-primary-runtime\presentations\26.521.10419\skills\presentations\SKILL.md
+```
+
+说明：`Presentations` 通常来自 Codex 的 Presentations 插件/运行时。请在 Codex 插件环境中启用它，并查看其 `SKILL.md` 了解 artifact-tool presentation JSX、PPTX 导入、PPTX 导出、预览和 QA 等能力。
 
 ## 限制
 
-- 默认 PPTX 是图片型导出，不支持直接编辑每个文本框或图形。
-- 如果需要可编辑 PPTX，需要额外进行 PowerPoint 原生重建，视觉一致性也需要单独 QA。
-- PPTX 自动构建依赖 Windows PowerPoint COM。
+- 本仓库不复制 `html-ppt` 和 `Presentations` 的全部内容。
+- 没有这两个必要依赖时，本 workflow 不应继续执行。
+- 图片型 PPTX 视觉保真但不可逐元素编辑。
+- 可编辑 PPTX 需要额外 QA，并且可能与 HTML 最终版存在细微差异。
 - HTML 截图导出依赖 Edge 或 Chrome。
-- 如果模板里有复杂动画、嵌入视频或特殊字体，需要在 HTML 中手动近似或补充资源。
+- 图片型 PPTX 自动构建依赖 Windows PowerPoint COM。
 
 ## 清理与安全
 

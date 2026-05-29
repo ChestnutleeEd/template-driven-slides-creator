@@ -1,58 +1,83 @@
 ---
-name: template-driven-ppt-designer
-description: Create polished business presentations from a user-provided PPT/PPTX template and source material. Use when the user wants an HTML deck that preserves the template's visual language, logo, colors, icons, geometry, and footer/header elements, with optional high-resolution image-based PPTX export and iterative optimization using third-party presentation skills such as html-ppt and Presentations.
+name: template-driven-slides-creator
+description: Create template-driven presentation decks from a user-provided PPT/PPTX template and reference materials by coordinating the required Presentations and html-ppt skills. Use when the user wants a first-pass deck derived from a template plus source/reference content, then an HTML slide experience refined with one of html-ppt's 36 themes, template-preserving visual polish, fullscreen/keyboard/carousel behavior, animation, QA screenshots, and mandatory user confirmation about whether PPTX output is needed.
 ---
 
-# Template-Driven PPT Designer
+# Template-Driven Slides Creator
 
 ## Overview
 
-Create a presentation from a user's existing PowerPoint template plus source content, preserving the template style while improving structure, layout, animation, and visual polish. The required primary deliverable is an interactive HTML deck; PPTX is optional and should default to a high-resolution image-based export from the final HTML.
+Create a polished presentation from a user's existing PowerPoint template plus reference/source content. The workflow is template-first, then skill-coordinated:
 
-This skill is an orchestration skill. It does not bundle the full contents of `html-ppt` or `presentations:Presentations`. Use those skills when they are installed and available:
+1. Use `presentations:Presentations` to create an initial rule-following deck/story from the supplied template and reference materials.
+2. Use `html-ppt` to turn the result into a refined HTML slide experience, ask the user to choose from the 36 html-ppt themes, and apply template-preserving visual polish, animation, carousel navigation, keyboard controls, fullscreen behavior, and export readiness.
+3. Ask the user through conversation whether a PPTX file is needed. If requested, export or rebuild according to the chosen route and verify the result.
 
-- Use `html-ppt` for HTML deck templates, themes, slide layouts, CSS animations, canvas FX, keyboard runtime, presenter mode, and PNG-oriented HTML rendering patterns.
-- Use `presentations:Presentations` for native editable PPTX workflows based on artifact-tool presentation JSX.
-- If either skill is unavailable, continue with this skill's workflow and scripts, but do not claim that unavailable templates, animations, canvas FX, or native editable PPTX helpers are present.
+This is an orchestration skill. It does not bundle or copy the full contents of `html-ppt` or `presentations:Presentations`. Both skills are required dependencies.
 
-## Start Here
+## Required Dependency Gate
 
-First ask or confirm the output choice:
+At the start of every task, check whether both required skills are installed and available:
 
-```text
-HTML is always generated. Do you also want a PPTX version?
-- HTML only
-- HTML + PPTX
-```
+- `presentations:Presentations`: required for the initial template/reference-based deck creation and native PPTX-aware workflows.
+- `html-ppt`: required for the final HTML slide system, theme selection, layouts, CSS animations, canvas FX, runtime navigation, presenter/fullscreen behavior, and HTML rendering conventions.
 
-If the user already specified the format, proceed without asking again. Ask for missing template/content files only when they cannot be discovered from the workspace.
+If either required skill is missing, stop before creating the deck and ask the user whether to install the missing skill(s). Explain that:
+
+- Without `Presentations`, the initial template-grounded PPTX-aware creation pass is not available.
+- Without `html-ppt`, the required 36-theme selection, animation system, canvas FX, carousel/runtime features, and HTML slide conventions are not available.
+
+Do not continue with a degraded workflow unless the user explicitly changes the requirements.
+
+## Required User Questions
+
+Always ask these questions through conversation before building the final deck:
+
+1. Confirm both required skills are available; if not, ask whether to install the missing skill(s).
+2. Ask whether the user needs a PPTX file in addition to the HTML output.
+3. Ask the user to choose one `html-ppt` theme from this list:
+
+`minimal-white`, `editorial-serif`, `soft-pastel`, `sharp-mono`, `arctic-cool`, `sunset-warm`, `catppuccin-latte`, `catppuccin-mocha`, `dracula`, `tokyo-night`, `nord`, `solarized-light`, `gruvbox-dark`, `rose-pine`, `neo-brutalism`, `glassmorphism`, `bauhaus`, `swiss-grid`, `terminal-green`, `xiaohongshu-white`, `rainbow-gradient`, `aurora`, `blueprint`, `memphis-pop`, `cyberpunk-neon`, `y2k-chrome`, `retro-tv`, `japanese-minimal`, `vaporwave`, `midcentury`, `corporate-clean`, `academic-paper`, `news-broadcast`, `pitch-deck-vc`, `magazine-bold`, `engineering-whiteprint`.
+
+Recommend 2-3 themes based on the template and audience, but let the user choose. The selected theme is a refinement layer; it must not erase the supplied PPT template's brand identity.
 
 ## Workflow
 
 Follow the full workflow in [references/workflow.md](references/workflow.md):
 
-1. Inspect the PPT template visually and structurally before designing.
-2. Extract and synthesize the source content into an English slide narrative unless the user asks for another language.
-3. Build the HTML deck with the `html-ppt` skill as the design engine when available.
-4. Preserve all important template elements, especially logos, colors, geometric motifs, footer/header bars, icon style, and confidentiality labels.
-5. Add carousel navigation, keyboard controls, fullscreen mode, slide animations, and subtle canvas FX.
-6. Verify normal and fullscreen layouts with screenshots.
-7. If PPTX is requested, render the final HTML slides as 4K PNGs and build a 16:9 PPTX where each slide is a full-slide image, with native PowerPoint transitions.
+1. Gate on required skills: `presentations:Presentations` and `html-ppt`.
+2. Ask whether PPTX output is needed.
+3. Inspect the supplied PPT/PPTX template and reference materials.
+4. Use `Presentations` to create the first-pass template-following result from the template plus references.
+5. Ask the user to choose one of the 36 `html-ppt` themes.
+6. Use `html-ppt` to refine the final HTML deck while preserving the original template style.
+7. Implement required runtime behavior: fullscreen button, carousel/slide navigation, keyboard controls, animation, and export-friendly query modes.
+8. Verify normal, fullscreen, and export layouts with screenshots; fix text overlap, hidden content, broken scaling, footer/logo collisions, and off-screen elements.
+9. If PPTX is requested, create and verify the PPTX output.
 
 ## Design Rules
 
 Use [references/design-rules.md](references/design-rules.md) for the visual standard. Key requirements:
 
-- Preserve the original template's identity; do not remove template/SAP elements unless explicitly requested.
-- Use a business-clean, executive-report style: simple, confident, spacious, but not sparse.
-- Keep every slide balanced; avoid layouts where one half is empty unless the emptiness is intentional and visually anchored.
-- Make fullscreen responsive by scaling the entire 16:9 slide canvas to the viewport, not by stretching individual slide content.
-- Keep animation subtle: content transitions support comprehension, canvas FX stays behind content and never obscures text.
-- For PPTX clarity, use high-resolution image export from HTML, not low-resolution screenshots.
+- Treat the user's PPT template as the design foundation.
+- Preserve logos, colors, geometric motifs, icon language, headers, footers, confidentiality labels, and page chrome.
+- Use the selected `html-ppt` theme to enhance rhythm, typography, animation, and polish without replacing the template's identity.
+- Keep every slide readable and balanced.
+- Fullscreen must scale the complete 16:9 slide canvas to the viewport.
+- Text must never overlap, hide under template shapes, collide with logos/footers, or disappear after fullscreen/export.
+- Navigation and controls must not cover slide content.
+- Animations and canvas FX must support comprehension and stay behind content.
 
-## Optional PPTX Export
+## PPTX Output
 
-For PPTX, prefer the image-based route:
+PPTX is not assumed. The agent must ask the user whether PPTX is needed.
+
+When PPTX is requested, choose the route based on the user's need:
+
+- Use `Presentations` for native editable PPTX when editability is required.
+- Use the HTML-to-4K-PNG image route when visual fidelity to the final HTML is more important than editability.
+
+For the image-based route:
 
 1. Finalize and verify HTML first.
 2. Render each slide at 3840 x 2160 with `?full=1&export=1&slide=N`.
@@ -60,15 +85,15 @@ For PPTX, prefer the image-based route:
 4. Add simple native transitions such as fade.
 5. Verify media dimensions and contact-sheet clarity.
 
-Use `scripts/render-html-slides.ps1` and `scripts/build-picture-pptx.ps1` as starting automation. This PPTX route is high fidelity and presentation-ready, but not text-editable. If the user specifically needs editable PPTX, explain that it requires a separate native reconstruction pass and will be less pixel-identical than the HTML.
+Use `scripts/render-html-slides.ps1` and `scripts/build-picture-pptx.ps1` as starting automation.
 
 ## Tool Coordination
 
-- Use `html-ppt` for HTML layout systems, corporate-clean style, template-inspired slide patterns, carousel behavior, CSS slide animations, canvas FX, presenter mode, and HTML-to-PNG export conventions. Read the installed `html-ppt` skill before relying on its available themes, animations, or templates.
-- Use `presentations:Presentations` when a native editable PPTX or PowerPoint artifact workflow is needed. Read the installed Presentations skill before using artifact-tool presentation JSX.
-- Do not copy or recreate the full `html-ppt` or `Presentations` instructions inside this skill. Treat them as external dependencies so their upstream behavior can stay current.
-- Use browser or Playwright-style screenshots to verify layout, especially fullscreen behavior.
-- Use PowerPoint COM on Windows when creating or checking the image-based PPTX locally.
+- Read and use the installed `Presentations` skill before the initial deck creation pass.
+- Read and use the installed `html-ppt` skill before theme selection, HTML authoring, animation, canvas FX, runtime, and export behavior.
+- Do not copy or recreate the full `html-ppt` or `Presentations` instructions inside this skill.
+- Use browser or Playwright-style screenshots to verify layout, especially fullscreen and export behavior.
+- Use PowerPoint COM on Windows when creating or checking image-based PPTX locally.
 
 ## Safety
 

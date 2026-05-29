@@ -1,65 +1,87 @@
 # Workflow
 
-## 1. Confirm Deliverables
+## 1. Required Skill Gate
 
-HTML is mandatory. PPTX is optional. At the start, ask the user whether they want:
+This skill requires both `presentations:Presentations` and `html-ppt`.
 
+Before creating any deck, check whether both skills are installed and available:
+
+- `presentations:Presentations`: required for the first-pass deck creation from the supplied PPT/PPTX template and reference materials.
+- `html-ppt`: required for final HTML slide authoring, the 36-theme selection step, reusable themes/layouts, CSS animations, canvas FX, carousel/runtime behavior, fullscreen behavior, presenter behavior, and HTML export conventions.
+
+If either skill is missing, stop and ask the user whether to install the missing skill(s). The prompt should explain why they are necessary:
+
+```text
+This workflow requires both Presentations and html-ppt.
+- Presentations is required to create the first-pass template/reference-based deck.
+- html-ppt is required for the final HTML slide system, 36-theme selection, animation, canvas FX, carousel controls, and fullscreen/runtime behavior.
+
+One or both skills are missing. Do you want me to help install or enable them before continuing?
+```
+
+Do not silently continue with a downgraded workflow. Continue only after both required skills are available, or after the user explicitly changes the requirement.
+
+## 2. Confirm PPTX Requirement
+
+HTML output is always part of this workflow. PPTX output must be confirmed through conversation.
+
+Ask:
+
+```text
+Do you also need a PPTX file?
 - HTML only
 - HTML + PPTX
+- HTML + editable PPTX
+```
 
-If the user already answered, continue. If they ask for PPTX, use the image-based export route unless they explicitly require editable PowerPoint objects.
+Use the answer to choose the final export route:
 
-## 1.5. Check Optional Skill Dependencies
+- `HTML only`: deliver the final HTML deck.
+- `HTML + PPTX`: prefer high-fidelity image-based PPTX from final HTML.
+- `HTML + editable PPTX`: use `Presentations` and artifact-tool workflows for native editable PPTX, accepting that it may require extra QA and may be less pixel-identical to the HTML.
 
-This skill orchestrates other presentation skills but does not bundle their full contents.
-
-Before relying on external capabilities, check whether they are installed and available:
-
-- `html-ppt`: use for HTML deck templates, themes, reusable layouts, CSS animations, canvas FX, keyboard runtime, presenter mode, and HTML rendering conventions. If it is available, read its `SKILL.md` and relevant references such as themes, layouts, animations, or full-deck templates before authoring.
-- `presentations:Presentations`: use for native editable PPTX workflows based on artifact-tool presentation JSX. If it is available and the user needs editable PPTX, read its `SKILL.md` and follow its operating contract.
-
-If `html-ppt` is unavailable, continue with a custom static HTML deck and this skill's design rules, but do not claim access to `html-ppt` themes, templates, animations, presenter mode, or canvas FX.
-
-If `presentations:Presentations` is unavailable, use this skill's default route: final HTML first, then optional high-resolution image-based PPTX via PNG frames and PowerPoint COM.
-
-## 2. Gather Inputs
+## 3. Gather Inputs
 
 Collect or infer:
 
 - PPT/PPTX template file.
-- Source content file(s), such as DOCX, PPTX, PDF, Markdown, screenshots, logs, or notes.
-- Audience, language, tone, confidentiality requirements, and target length.
-- Any third-party skill the user wants involved, especially `html-ppt` or `presentations:Presentations`.
+- Reference/source files such as DOCX, PPTX, PDF, Markdown, screenshots, logs, notes, or tables.
+- Audience, language, tone, confidentiality requirements, target length, and intended delivery context.
+- Whether the user needs HTML only, HTML + image-based PPTX, or HTML + editable PPTX.
+- Any fixed template elements that must be preserved.
 
 Default assumptions when not specified:
 
 - Language: English.
-- Style: business-clean / corporate executive report.
 - Slide ratio: 16:9.
 - HTML slide canvas: 1280 x 720 logical pixels.
-- PPTX export: 3840 x 2160 PNG per slide.
+- PPTX image export: 3840 x 2160 PNG per slide.
+- Style: template-first business-clean executive report.
 
-## 3. Inspect the Template
+## 4. Inspect the Template
 
-Before designing, inspect the template like a visual system:
+Before writing slides, inspect the PPT template as the design foundation:
 
-- Render or screenshot several template slides.
-- Identify theme colors, typography feel, title bars, footers, logos, icons, motifs, geometric shapes, watermark behavior, and confidentiality labels.
-- Extract reusable image assets if needed.
-- Record "must preserve" elements. For SAP-style decks, preserve the SAP logo, blue palette, angular blocks, header/footer bars, and internal/customer label.
+- Render or screenshot representative template slides.
+- Identify colors, typography feel, title bars, footers, logos, icons, motifs, geometric shapes, watermark behavior, page numbers, and confidentiality labels.
+- Extract reusable assets if needed.
+- Record "must preserve" rules.
 
-Do not invent a new brand system. The output should feel like a refined continuation of the supplied template.
+Do not invent a new brand system. The final output should feel like a refined continuation of the supplied template.
 
-## 4. Build the Narrative
+## 5. Build the First-Pass Result With Presentations
 
-Read the source content and convert it into a compact presentation story:
+Use the installed `presentations:Presentations` skill to create the first-pass result from the supplied template and reference materials.
 
-- Define the core claim.
-- Identify the timeline, mechanism, evidence, impact/risk, recommendation, and next actions.
-- Turn raw technical details into slide-ready headings and short supporting copy.
-- Prefer strong executive headlines over generic section labels.
+The first pass should:
 
-For incident/root-cause decks, a useful sequence is:
+- Follow the template's visual system and layout grammar.
+- Convert reference materials into a concise narrative.
+- Establish slide claims, proof objects, and recommended page sequence.
+- Preserve template identity, especially logos, colors, footer/header chrome, geometry, and confidentiality labels.
+- Produce an initial deck or structured deck plan that can be refined into the final HTML deck.
+
+For incident/root-cause decks, a useful default sequence is:
 
 1. Cover with root-cause claim and key facts.
 2. Executive summary.
@@ -71,30 +93,61 @@ For incident/root-cause decks, a useful sequence is:
 8. Recommended actions.
 9. Closing / decision page.
 
-## 5. Build the HTML Deck
+## 6. Ask the User to Choose an html-ppt Theme
 
-Use `html-ppt` when available. Apply the corporate-clean style and template-inspired layouts:
+After the first-pass result exists, ask the user to choose one `html-ppt` theme. Show the full list:
 
-- Cover slide with strong template geometry.
-- Executive summary with KPI cards.
-- Timeline slide.
-- Failure chain / process-arrow slide.
-- Evidence grid / parameter strip.
-- Two-column risk or comparison slide.
+```text
+Please choose one html-ppt theme for the final polish layer:
+minimal-white, editorial-serif, soft-pastel, sharp-mono, arctic-cool, sunset-warm,
+catppuccin-latte, catppuccin-mocha, dracula, tokyo-night, nord, solarized-light,
+gruvbox-dark, rose-pine, neo-brutalism, glassmorphism, bauhaus, swiss-grid,
+terminal-green, xiaohongshu-white, rainbow-gradient, aurora, blueprint,
+memphis-pop, cyberpunk-neon, y2k-chrome, retro-tv, japanese-minimal, vaporwave,
+midcentury, corporate-clean, academic-paper, news-broadcast, pitch-deck-vc,
+magazine-bold, engineering-whiteprint.
+```
+
+Recommend 2-3 choices based on the template and audience. Examples:
+
+- Formal business / executive report: `corporate-clean`, `swiss-grid`, `minimal-white`, `pitch-deck-vc`.
+- Technical or engineering: `blueprint`, `engineering-whiteprint`, `tokyo-night`, `sharp-mono`.
+- Academic/report: `academic-paper`, `editorial-serif`, `solarized-light`.
+- More expressive internal sharing: `aurora`, `bauhaus`, `magazine-bold`, `soft-pastel`.
+
+The selected theme is a refinement layer. It must not override the supplied PPT template's brand identity.
+
+## 7. Refine the Final HTML Deck With html-ppt
+
+Use the installed `html-ppt` skill to build or refine the final HTML deck.
+
+Required behavior:
+
+- Preserve the original template style as the base visual system.
+- Apply the user-selected html-ppt theme as controlled polish, not a replacement brand.
+- Add carousel-style slide navigation with previous/next buttons, dots, counter, and keyboard support.
+- Support keyboard navigation: ArrowLeft/ArrowRight, PageUp/PageDown, Home/End, Space, and F for fullscreen when practical.
+- Add a visible fullscreen button.
+- Support query parameters for QA/export: `?slide=N`, `?full=1`, and `?export=1`.
+- Hide UI controls in export mode.
+- Add appropriate CSS animations and optional canvas FX from html-ppt when they improve comprehension.
+
+Use template-inspired layouts such as:
+
+- Cover with template geometry and key facts.
+- Executive summary with insight cards.
+- Timeline.
+- Failure chain or process diagram.
+- Evidence grid or parameter strip.
+- Risk/impact comparison.
 - Recommendation cards.
-- Closing slide with action emphasis.
+- Closing / decision page.
 
-Required HTML behavior:
+## 8. Responsive Fullscreen Rules
 
-- Carousel-style slide navigation with previous/next buttons, dots, counter, and keyboard support.
-- Keyboard: ArrowLeft/ArrowRight, PageUp/PageDown, Home/End, Space, and F for fullscreen when practical.
-- Fullscreen button.
-- Query support for QA/export: `?slide=N`, `?full=1`, and `?export=1`.
-- Export mode hides navigation and fixes the viewport for clean screenshots.
+Fullscreen correctness is mandatory.
 
-## 6. Responsive Fullscreen
-
-Use one fixed logical slide size, normally 1280 x 720. The responsive layer should scale the complete slide canvas to fit the viewport.
+Use one fixed logical 16:9 slide coordinate system and scale the complete slide canvas to the viewport.
 
 Recommended model:
 
@@ -102,91 +155,70 @@ Recommended model:
 - `.slide-stage` stays 1280 x 720.
 - JavaScript computes `scale = min(window.innerWidth / 1280, window.innerHeight / 720)`.
 - Apply scale to the whole slide stage using `zoom` or `transform`.
-- In normal mode, cap scale at 1 so the preview remains centered.
+- In normal mode, cap scale at 1 if a centered preview is desired.
 - In fullscreen mode, allow scale above 1 so content fills the screen without leaving large blank lower areas.
 
-Do not let individual text blocks or cards reflow independently in fullscreen; that causes top-heavy slides and broken geometry.
+Do not let individual text blocks, cards, or diagrams reflow independently in fullscreen. That caused previous failures such as top-heavy slides, incorrect screen fit, and broken geometry.
 
-## 7. Animation and Canvas FX
-
-Use subtle presentation animation:
-
-- Slide transition: fade/slide, 350-650 ms.
-- Content reveal: fade-up, fade-left/right, zoom-pop, staggered cards.
-- Process/timeline: line draw or staged node reveal.
-- KPI cards: small upward motion or count-style emphasis if appropriate.
-
-Canvas FX should be low opacity and behind content:
-
-- Constellation / network dots for technical root-cause analysis.
-- Data stream or flowing lines for systems/process themes.
-- Chain reaction or pulse effect for failure propagation.
-- Orbit rings or soft particles for cover/closing slides.
-
-Disable or simplify FX in export mode if they cause inconsistent screenshots.
-
-## 8. Fill Empty Areas Intelligently
-
-If a slide feels half-empty, add relevant structure rather than decoration:
-
-- Evidence cards.
-- Parameter strips.
-- Risk notes.
-- "What it means" callouts.
-- Control/action metadata.
-- Source/confidence markers.
-- Small diagrams or process chips.
-
-Keep density executive-friendly: more complete than a sparse mockup, less crowded than raw notes.
-
-## 9. Verify HTML
+## 9. Layout QA
 
 Use screenshots before final delivery:
 
 - 1280 x 720 baseline view.
 - Normal browser-centered preview.
 - Fullscreen-sized viewport, such as 1920 x 1080 or 2048 x 1152.
-- Any slides with complex arrows, large geometry, cards, or long text.
+- Export mode using `?full=1&export=1&slide=N`.
+- Any slide with long text, complex arrows, large geometry, cards, charts, or dense evidence.
 
-Check:
+Fix these issues before delivery:
 
-- No text is hidden under template shapes.
-- No text overlaps other text or logos.
-- Footer/header elements remain aligned.
-- Navigation does not cover slide content.
-- `?export=1` hides UI controls.
-- Fullscreen fills the viewport by scaling the whole slide, not by leaving content stacked at the top.
+- Text hidden under template shapes.
+- Text overlapping other text, logos, page numbers, controls, or footers.
+- Controls covering slide content.
+- Fullscreen content not fitting the viewport.
+- Slides becoming top-heavy in fullscreen.
+- Logos, headers, footers, and confidentiality labels drifting out of alignment.
+- Canvas FX or animation obscuring content.
+- Export mode showing navigation UI.
+- Cropped or off-screen content.
 
 ## 10. Build PPTX When Requested
 
-Use the final HTML as source of truth.
+If the user requested PPTX, choose the route based on their answer.
 
-Suggested command flow:
+For high-fidelity image-based PPTX:
 
 ```powershell
 .\scripts\render-html-slides.ps1 -HtmlPath "path\deck.html" -OutDir "path\frames" -SlideCount 9
 .\scripts\build-picture-pptx.ps1 -ImageDir "path\frames" -OutPptx "path\deck.pptx" -SlideCount 9
 ```
 
-The image-based PPTX route:
+The image-based route:
 
-- Preserves HTML design exactly.
+- Preserves final HTML design closely.
 - Produces sharp slides when rendered at 3840 x 2160.
 - Supports native PowerPoint slide transitions.
 - Is not editable at the text/card level.
 
+For editable PPTX:
+
+- Use `Presentations` and artifact-tool presentation JSX.
+- Preserve template identity.
+- Run extra QA because native PPTX reconstruction may differ from the final HTML.
+
 Verify PPTX:
 
-- Unzip or inspect media dimensions; every slide image should be 3840 x 2160 unless the user chose another resolution.
-- Open/export a contact sheet from PowerPoint if available.
-- Confirm the deck contains one full-bleed image per slide and native transitions.
+- Final file exists and is non-empty.
+- Slide count is correct.
+- Image-based PPTX has full-bleed 16:9 slide images.
+- Editable PPTX has no obvious layout drift, text overlap, or broken template elements.
 
-## 11. Iterate With Third-Party Skills
+## 11. Final Response
 
-When the user references a third-party skill:
+Summarize:
 
-- Read that skill's `SKILL.md`.
-- Apply only the relevant parts rather than copying the whole style blindly.
-- Keep this skill's priority order: template preservation, readable business design, carousel/fullscreen correctness, then decorative animation.
-
-If the third-party skill conflicts with the user's template, preserve the template.
+- Final HTML location.
+- PPTX location if requested.
+- Selected html-ppt theme.
+- Required dependency status.
+- Any known residual limitation, especially whether PPTX is image-based or editable.
