@@ -1,8 +1,16 @@
 /.tmp/
 /frames/
 /output/
+/dist/
+/build/
+/node_modules/
+__pycache__/
+*.pyc
+.env
+.env.*
 *.pptx
 *.png
 *.pdf
+*.log
 Thumbs.db
 .DS_Store
