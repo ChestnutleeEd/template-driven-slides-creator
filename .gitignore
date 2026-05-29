@@ -1,0 +1,8 @@
+/.tmp/
+/frames/
+/output/
+*.pptx
+*.png
+*.pdf
+Thumbs.db
+.DS_Store

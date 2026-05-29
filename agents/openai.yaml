@@ -1,0 +1,4 @@
+interface:
+  display_name: "Template-Driven PPT Designer"
+  short_description: "Create polished HTML/PPTX decks from a user PPT template."
+  default_prompt: "Use $template-driven-ppt-designer to create a polished HTML deck from my PPT template and source content, with optional high-resolution PPTX export."
